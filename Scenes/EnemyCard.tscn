@@ -1,0 +1,89 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddg5qiycjjabh"]
+
+[ext_resource type="Script" path="res://Scripts/AI_Card.gd" id="1_hq7cq"]
+[ext_resource type="Texture2D" uid="uid://b7eswqlraqo54" path="res://Assets/RoyalGuardCard.png" id="2_yx7nd"]
+
+[node name="Card" type="Node2D"]
+scale = Vector2(1.1, 1.1)
+script = ExtResource("1_hq7cq")
+
+[node name="CardImage" type="Sprite2D" parent="."]
+position = Vector2(-2.38419e-07, -9.53674e-07)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_yx7nd")
+
+[node name="Attack" type="RichTextLabel" parent="."]
+offset_left = -65.4545
+offset_top = 77.2727
+offset_right = -42.4545
+offset_bottom = 97.2727
+scale = Vector2(0.8, 0.8)
+text = "0"
+scroll_active = false
+
+[node name="AbilityCD" type="RichTextLabel" parent="."]
+offset_left = -10.0
+offset_top = 59.0909
+offset_right = 13.0
+offset_bottom = 79.0909
+scale = Vector2(0.5, 0.5)
+text = "0"
+scroll_active = false
+
+[node name="SPD" type="RichTextLabel" parent="."]
+offset_left = -45.4545
+offset_top = -77.2727
+offset_right = -22.4545
+offset_bottom = -57.2727
+scale = Vector2(0.6, 0.6)
+text = "0"
+scroll_active = false
+
+[node name="HP" type="RichTextLabel" parent="."]
+offset_left = 37.2727
+offset_top = 76.3636
+offset_right = 60.2727
+offset_bottom = 104.363
+scale = Vector2(0.8, 0.8)
+text = "0"
+
+[node name="Cost" type="RichTextLabel" parent="."]
+offset_left = 37.0
+offset_top = -94.545
+offset_right = 62.0
+offset_bottom = -66.545
+scale = Vector2(0.9, 0.9)
+text = "0"
+
+[node name="Turn" type="RichTextLabel" parent="."]
+modulate = Color(0, 0, 0, 1)
+offset_left = -59.0909
+offset_top = -95.4545
+offset_right = -34.0909
+offset_bottom = -67.4545
+scale = Vector2(0.9, 0.9)
+text = "0"
+
+[node name="Name" type="RichTextLabel" parent="."]
+offset_left = -26.3636
+offset_top = -95.4545
+offset_right = 113.636
+offset_bottom = -67.4545
+scale = Vector2(0.6, 0.6)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Lancer"
+fit_content = true
+scroll_active = false
+
+[node name="Fraction" type="RichTextLabel" parent="."]
+offset_left = -26.3636
+offset_top = -84.5455
+offset_right = 113.636
+offset_bottom = -56.5455
+scale = Vector2(0.6, 0.6)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Knighthood"
+fit_content = true
+scroll_active = false

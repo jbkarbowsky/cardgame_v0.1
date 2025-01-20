@@ -1,0 +1,283 @@
+[gd_scene load_steps=24 format=3 uid="uid://d0u0nu62geet6"]
+
+[ext_resource type="Script" path="res://Scripts/CardManager.gd" id="1_j4re7"]
+[ext_resource type="PackedScene" uid="uid://ci48f34jmp61x" path="res://Scenes/CardSlot.tscn" id="3_lg1fp"]
+[ext_resource type="Texture2D" uid="uid://0yxcft60vd5g" path="res://Assets/RefreshShop-Normal.png" id="4_3lgw6"]
+[ext_resource type="Script" path="res://Scripts/Shop.gd" id="4_8ykf1"]
+[ext_resource type="Texture2D" uid="uid://duyn12v7hun3a" path="res://Assets/RefreshShop-pressed.png" id="5_r6tug"]
+[ext_resource type="Texture2D" uid="uid://4blrandnxjmr" path="res://Assets/Next-normal.png" id="6_lsngf"]
+[ext_resource type="Texture2D" uid="uid://c5nbr74ji46r7" path="res://Assets/Next_pressed.png" id="7_3uq41"]
+[ext_resource type="PackedScene" uid="uid://cptw8kr3fyybb" path="res://Scenes/AI_CardSlot.tscn" id="8_45ctm"]
+[ext_resource type="Script" path="res://Scripts/AI_Shop.gd" id="8_e5dt1"]
+[ext_resource type="Script" path="res://Scripts/AI_Player.gd" id="8_pvw2x"]
+[ext_resource type="Script" path="res://Scripts/BattleManager.gd" id="11_dnmta"]
+[ext_resource type="Texture2D" uid="uid://cumi0tc8iw6dj" path="res://Assets/EndTurn-Normal.png" id="12_whc3e"]
+[ext_resource type="Texture2D" uid="uid://8vn6erdvu3rw" path="res://Assets/EndTurn_pressed.png" id="13_x52in"]
+[ext_resource type="Texture2D" uid="uid://b0xbpdpb1e7s6" path="res://Assets/start-normal.png" id="14_30myj"]
+[ext_resource type="Texture2D" uid="uid://b6khf8ftj3to1" path="res://Assets/Start-presse.png" id="15_erf51"]
+[ext_resource type="Texture2D" uid="uid://b4j7q3u586ciq" path="res://Assets/Player_Defeated.png" id="16_yup4w"]
+[ext_resource type="Texture2D" uid="uid://blaf6fw571igq" path="res://Assets/AI_Defeated.png" id="17_1hh3x"]
+[ext_resource type="Texture2D" uid="uid://cv8uub2hgdh82" path="res://Assets/Try_again_normal.png" id="18_hex4t"]
+[ext_resource type="Texture2D" uid="uid://dgwnw4ydrohkh" path="res://Assets/Try_Again_pressed.png" id="19_indd1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dmyib"]
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eyxp3"]
+bg_color = Color(0.643844, 0, 0.0695512, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2l71b"]
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wfry5"]
+bg_color = Color(0.643219, 0.0140997, 3.36915e-07, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[node name="Main" type="Node2D"]
+
+[node name="CardManager" type="Node2D" parent="."]
+script = ExtResource("1_j4re7")
+
+[node name="ShopDeck" type="Node2D" parent="."]
+script = ExtResource("4_8ykf1")
+
+[node name="PlayerDeck" type="Node2D" parent="."]
+
+[node name="CardSlot1" parent="PlayerDeck" instance=ExtResource("3_lg1fp")]
+position = Vector2(600, 675)
+scale = Vector2(1.1, 1.1)
+
+[node name="CardSlot2" parent="PlayerDeck" instance=ExtResource("3_lg1fp")]
+position = Vector2(780, 675)
+scale = Vector2(1.1, 1.1)
+
+[node name="CardSlot3" parent="PlayerDeck" instance=ExtResource("3_lg1fp")]
+position = Vector2(960, 675)
+scale = Vector2(1.1, 1.1)
+
+[node name="CardSlot4" parent="PlayerDeck" instance=ExtResource("3_lg1fp")]
+position = Vector2(1140, 675)
+scale = Vector2(1.1, 1.1)
+
+[node name="CardSlot5" parent="PlayerDeck" instance=ExtResource("3_lg1fp")]
+position = Vector2(1320, 675)
+scale = Vector2(1.1, 1.1)
+
+[node name="Coins" type="RichTextLabel" parent="."]
+offset_left = 135.0
+offset_top = 346.0
+offset_right = 241.0
+offset_bottom = 372.0
+scale = Vector2(2, 2)
+text = "COINS:"
+metadata/_edit_use_anchors_ = true
+
+[node name="AICoins" type="RichTextLabel" parent="."]
+offset_left = 1500.0
+offset_top = 346.0
+offset_right = 1606.0
+offset_bottom = 372.0
+scale = Vector2(2, 2)
+text = "COINS:"
+metadata/_edit_use_anchors_ = true
+
+[node name="CardLimit" type="Label" parent="."]
+visible = false
+offset_left = 786.0
+offset_top = 439.0
+offset_right = 965.0
+offset_bottom = 462.0
+scale = Vector2(2, 2)
+text = "You have MAX cards"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NotEnoughCoins" type="Label" parent="."]
+visible = false
+offset_left = 786.0
+offset_top = 439.0
+offset_right = 965.0
+offset_bottom = 462.0
+scale = Vector2(2, 2)
+text = "Not enough coins! "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RefreshShopButton" type="TextureButton" parent="."]
+offset_left = 129.0
+offset_top = 435.0
+offset_right = 353.0
+offset_bottom = 508.0
+pivot_offset = Vector2(112, 36)
+texture_normal = ExtResource("4_3lgw6")
+texture_pressed = ExtResource("5_r6tug")
+ignore_texture_size = true
+stretch_mode = 3
+
+[node name="NextButton" type="TextureButton" parent="."]
+offset_left = 129.0
+offset_top = 550.0
+offset_right = 353.0
+offset_bottom = 623.0
+pivot_offset = Vector2(112, 36)
+texture_normal = ExtResource("6_lsngf")
+texture_pressed = ExtResource("7_3uq41")
+ignore_texture_size = true
+stretch_mode = 3
+
+[node name="AI_Player" type="Node2D" parent="."]
+script = ExtResource("8_pvw2x")
+
+[node name="AI_PlayerHand" type="Node2D" parent="AI_Player"]
+
+[node name="CardSlot1" parent="AI_Player/AI_PlayerHand" instance=ExtResource("8_45ctm")]
+position = Vector2(600, 375)
+scale = Vector2(1.1, 1.1)
+
+[node name="CardSlot2" parent="AI_Player/AI_PlayerHand" instance=ExtResource("8_45ctm")]
+position = Vector2(780, 375)
+scale = Vector2(1.1, 1.1)
+
+[node name="CardSlot3" parent="AI_Player/AI_PlayerHand" instance=ExtResource("8_45ctm")]
+position = Vector2(960, 375)
+scale = Vector2(1.1, 1.1)
+
+[node name="CardSlot4" parent="AI_Player/AI_PlayerHand" instance=ExtResource("8_45ctm")]
+position = Vector2(1140, 375)
+scale = Vector2(1.1, 1.1)
+
+[node name="CardSlot5" parent="AI_Player/AI_PlayerHand" instance=ExtResource("8_45ctm")]
+position = Vector2(1320, 375)
+scale = Vector2(1.1, 1.1)
+
+[node name="AI_PlayerShopDeck" type="Node2D" parent="AI_Player"]
+script = ExtResource("8_e5dt1")
+
+[node name="BattleManager" type="Node" parent="."]
+script = ExtResource("11_dnmta")
+
+[node name="EndTurnButton" type="TextureButton" parent="."]
+visible = false
+offset_left = 128.0
+offset_top = 550.0
+offset_right = 355.0
+offset_bottom = 619.0
+disabled = true
+texture_normal = ExtResource("12_whc3e")
+texture_pressed = ExtResource("13_x52in")
+ignore_texture_size = true
+stretch_mode = 3
+
+[node name="Start" type="TextureButton" parent="."]
+visible = false
+offset_left = 133.0
+offset_top = 551.0
+offset_right = 348.0
+offset_bottom = 622.0
+texture_normal = ExtResource("14_30myj")
+texture_pressed = ExtResource("15_erf51")
+ignore_texture_size = true
+stretch_mode = 3
+
+[node name="BattleTimer" type="Timer" parent="."]
+
+[node name="AI_Health_Bar" type="ProgressBar" parent="."]
+visible = false
+offset_left = 581.0
+offset_top = 65.0
+offset_right = 1321.0
+offset_bottom = 107.0
+theme_override_styles/background = SubResource("StyleBoxFlat_dmyib")
+theme_override_styles/fill = SubResource("StyleBoxFlat_eyxp3")
+rounded = true
+
+[node name="AI_Health" type="RichTextLabel" parent="AI_Health_Bar"]
+layout_mode = 0
+offset_left = 235.0
+offset_top = 31.0
+offset_right = 414.0
+offset_bottom = 71.0
+scale = Vector2(2, 2)
+text = "Opponent Health "
+
+[node name="Player_Health_Bar" type="ProgressBar" parent="."]
+visible = false
+offset_left = 581.0
+offset_top = 950.0
+offset_right = 1321.0
+offset_bottom = 992.0
+theme_override_styles/background = SubResource("StyleBoxFlat_2l71b")
+theme_override_styles/fill = SubResource("StyleBoxFlat_wfry5")
+rounded = true
+
+[node name="Player_Health" type="RichTextLabel" parent="Player_Health_Bar"]
+layout_mode = 0
+offset_left = 268.0
+offset_top = 33.0
+offset_right = 379.0
+offset_bottom = 73.0
+scale = Vector2(2, 2)
+text = "Player Health
+"
+
+[node name="Player_Defeated" type="TextureRect" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 276.0
+offset_top = -569.0
+offset_right = 1690.0
+offset_bottom = 1431.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("16_yup4w")
+
+[node name="AI_Player_Defeated" type="TextureRect" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 276.0
+offset_top = -569.0
+offset_right = 1690.0
+offset_bottom = 1431.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("17_1hh3x")
+
+[node name="Try_again" type="TextureButton" parent="."]
+visible = false
+offset_left = 775.0
+offset_top = 624.0
+offset_right = 1040.0
+offset_bottom = 719.0
+scale = Vector2(1.5, 1.5)
+texture_normal = ExtResource("18_hex4t")
+texture_pressed = ExtResource("19_indd1")
+ignore_texture_size = true
+stretch_mode = 3
+
+[connection signal="mouse_entered" from="RefreshShopButton" to="ShopDeck" method="_on_refresh_shop_mouse_entered"]
+[connection signal="pressed" from="RefreshShopButton" to="ShopDeck" method="_on_refresh_shop_pressed"]
+[connection signal="pressed" from="NextButton" to="BattleManager" method="_on_next_button_pressed"]
+[connection signal="pressed" from="EndTurnButton" to="BattleManager" method="_on_end_turn_button_pressed"]
+[connection signal="pressed" from="Start" to="BattleManager" method="_on_start_pressed"]
+[connection signal="pressed" from="Try_again" to="BattleManager" method="_on_try_again_pressed"]
