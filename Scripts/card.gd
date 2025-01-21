@@ -9,6 +9,15 @@ var is_alive = true
 var what_card_slot
 
 
+
+var skill_cooldown = 0
+var skill_duration = 0 
+var current_cooldown = 0
+var current_duration = 0
+var card_id
+
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	get_parent().connect_card_signals(self)

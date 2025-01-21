@@ -9,6 +9,7 @@ var card_scene = preload(PATH_TO_CARD_SCENE)
 const CARD_WIDTH = 188
 const CARD_Y_POSITION = 910
 
+var battle_timer
 #Shop matrix
 var shop_deck = []
 #Variable for centering card placement
@@ -26,12 +27,18 @@ func _ready() -> void:
 	center_screen_x = get_viewport().size.x / 2
 	card_dbase_reference = preload("res://Scripts/CardDatabase.gd")
 	fill_shop(card_scene)
+	battle_timer = $"../BattleTimer"
+	battle_timer.one_shot = true
+	battle_timer.wait_time = 1
 	
 
 func _on_refresh_shop_pressed() -> void:
 	#-1 coin
 	if starting_coins <= 0:
 		$"../NotEnoughCoins".visible = true
+		battle_timer.start()
+		await battle_timer.timeout
+		$"../NotEnoughCoins".visible = false
 	else:
 		clear_shop()
 		starting_coins = starting_coins - 1
@@ -44,10 +51,9 @@ func clear_shop():
 	var parent = $"../CardManager"
 	for child in parent.get_children():
 		if !child.card_in_player_field:
-			print("Removing card:", child.name)
 			parent.remove_child(child)
 			child.queue_free()
-	print("Shop cleared. Remaining children:", parent.get_child_count())
+	
 
 			
 	
@@ -64,8 +70,11 @@ func update_coins(card):
 	cost = int(cost)
 	print(cost)
 	if (cost > starting_coins):
-		#do oskryptowania napis zeby znikal
+		
 		$"../NotEnoughCoins".visible = true
+		battle_timer.start()
+		await battle_timer.timeout
+		$"../NotEnoughCoins".visible = false
 		return 1
 	else:
 		starting_coins = starting_coins - cost
@@ -84,6 +93,7 @@ func random_card_draw(card):
 	card.get_node("SPD").text = str(card_dbase_reference.CARDS[name][4])
 	card.get_node("Cost").text = str(card_dbase_reference.CARDS[name][5])
 	card.get_node("Fraction").text = str(card_dbase_reference.CARDS[name][6])
+	card.get_node("DEF").text = "DEF: " + str(card_dbase_reference.CARDS[name][2])
 	return card 
 	
 func add_card_to_shop(card):
@@ -102,7 +112,7 @@ func update_card_positions():
 		#Get new position based on card index
 		var new_pos = Vector2(calculate_card_position(i),CARD_Y_POSITION)
 		var card = shop_deck[i]
-#		card.card_being_collected_pos = new_pos
+		card.card_being_collected_pos = new_pos
 		animate_card_to_pos(card, new_pos)
 		
 func animate_card_to_pos(card, pos):

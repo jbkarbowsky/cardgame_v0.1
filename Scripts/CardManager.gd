@@ -28,7 +28,7 @@ func _input(event):
 		if event.pressed:
 			var card = raycast_for_card()
 			if card and counter < 5 and card not in player_hand:
-				if !shop_deck_reference.update_coins(card):
+				if ! await shop_deck_reference.update_coins(card):
 					pick_card(card)
 			elif card in player_hand:
 				start_drag(card)
@@ -45,19 +45,26 @@ func _input(event):
 func pick_card(card):
 	if card in shop_deck_reference.shop_deck:
 		var node = $"../PlayerDeck"
-		var card_slot = node.get_child(counter)
-		if card_slot.card_in_slot:
-			counter = counter + 1
-			card_slot = node.get_child(counter)
-		var pos = node.get_child(counter).position
-		card.get_node("Area2D/CollisionShape2D").disabled = true
-		shop_deck_reference.animate_card_to_pos(card, pos)
-		card.card_in_player_field = true
-		card_slot.card_in_slot = true
-		card.what_card_slot = card_slot
-		player_hand.append(card)
-		shop_deck_reference.shop_deck.erase(card)
-		counter += 1
+		var pos = null
+		var card_slot = null
+		
+		# Znajdź pierwszy wolny slot
+		for i in range(node.get_child_count()):
+			var temp_slot = node.get_child(i)
+			if not temp_slot.card_in_slot:
+				pos = temp_slot.position
+				card_slot = temp_slot
+				break
+		
+		if card_slot != null:
+			card.get_node("Area2D/CollisionShape2D").disabled = true
+			shop_deck_reference.animate_card_to_pos(card, pos)
+			card.card_in_player_field = true
+			card_slot.card_in_slot = true
+			card.what_card_slot = card_slot
+			player_hand.append(card)
+			shop_deck_reference.shop_deck.erase(card)
+
 
 # Card dragging
 func start_drag(card):
@@ -76,9 +83,13 @@ func finish_drag():
 	if card_slot_found:
 		if card_found and card_found != card_dragged:
 			card_found.position = card_dragged_initial_position
+			card_found.what_card_slot.card_in_slot = true 
+			card_dragged.what_card_slot.card_in_slot = true
 			card_dragged.position = card_slot_found.position
 		else:
+			card_dragged.what_card_slot.card_in_slot = false 
 			card_dragged.position = card_slot_found.position
+			card_slot_found.card_in_slot = true
 	else:
 		add_card_to_hand(card_dragged, card_dragged_initial_position)
 	card_dragged = null

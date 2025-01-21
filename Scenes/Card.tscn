@@ -33,6 +33,16 @@ scale = Vector2(0.8, 0.8)
 text = "0"
 scroll_active = false
 
+[node name="DEF" type="RichTextLabel" parent="."]
+offset_left = -68.1818
+offset_top = 10.9091
+offset_right = -10.1818
+offset_bottom = 33.9091
+scale = Vector2(0.6, 0.6)
+text = "DEF: 0"
+scroll_active = false
+visible_characters = 6
+
 [node name="AbilityCD" type="RichTextLabel" parent="."]
 offset_left = -10.0
 offset_top = 59.0909

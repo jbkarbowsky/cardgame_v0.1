@@ -10,6 +10,10 @@ var player_hand_reference
 var combined_hands = []
 var MOVE_SPEED = 0.5
 
+var skill_vars = {}
+var card_id_counter = 0
+var card_states = {}
+
 var battle_timer 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -50,47 +54,97 @@ func _on_start_pressed() -> void:
 	$"../AI_Health_Bar".visible = true
 	$"../Player_Health_Bar".visible = true 
 	$"../Start".visible = false
-	print("Początkowa tablica: ", combined_hands, " rozmiar: ", combined_hands.size())
 	attack()
+
+
+
+
+func update_skills():
+	for card_id in skill_vars.keys():
+		print("Przed aktualizacją:", skill_vars[card_id])
+
+		if skill_vars[card_id]["current_cooldown"] > 0:
+			skill_vars[card_id]["current_cooldown"] -= 1
+			print("Decrementing cooldown for card_id:", card_id, "new cooldown:", skill_vars[card_id]["current_cooldown"])
+
+		if skill_vars[card_id]["current_duration"] > 0:
+			skill_vars[card_id]["current_duration"] -= 1
+			print("Decrementing duration for card_id:", card_id, "new duration:", skill_vars[card_id]["current_duration"])
+
+		if skill_vars[card_id]["current_duration"] == 0 and not skill_vars[card_id]["deactivated"]:
+			print("Dezaktywacja umiejętności warunki spełnione dla card_id:", card_id, "z owner:", skill_vars[card_id]["owner"])
+
+			if skill_vars[card_id]["owner"] == "AI":
+				$"../Card_Special_Abilities".deactivate_skill(card_id, ai_shop_reference.AI_player_hand)
+				print("Dezaktywacja umiejętności dla AI, card_id:", card_id)
+			elif skill_vars[card_id]["owner"] == "player":
+				$"../Card_Special_Abilities".deactivate_skill(card_id, player_hand_reference)
+				print("Dezaktywacja umiejętności dla playera, card_id:", card_id)
+
+			skill_vars[card_id]["deactivated"] = true
+
+		for card in combined_hands:
+			if card.card_id == card_id:
+				card.get_node("AbilityCD").text = str(skill_vars[card_id]["current_cooldown"])
+
+		print("Po aktualizacji:", skill_vars[card_id])
+
+
+
 
 func attack():
 	var i = 0
 	var last_card_attacked = false
 	while i < combined_hands.size():
-		if combined_hands[i].is_alive:
-			print("Atak karty:", combined_hands[i].name)
-			attack_target(combined_hands[i])
+		var card = combined_hands[i]
+		if not card.card_id:
+			var owner = "player" if card in player_hand_reference else "AI"
+			$"../Card_Special_Abilities".apply_ability(card, owner)  # Przypisanie umiejętności do karty
+		if card.is_alive:
+			$"../BattleManager".card_states[card.card_id]["is_alive"] = true  # Aktualizacja stanu karty
+			if $"../BattleManager".skill_vars[card.card_id]["current_cooldown"] == 0:
+				$"../BattleManager".skill_vars[card.card_id]["deactivated"] = false
+				if card in ai_shop_reference.AI_player_hand:
+					$"../Card_Special_Abilities".activate_skill(card, ai_shop_reference.AI_player_hand)
+				elif card in player_hand_reference:
+					$"../Card_Special_Abilities".activate_skill(card, player_hand_reference)
+		
+			attack_target(card)
 			battle_timer.start()
 			await battle_timer.timeout
 			if i == combined_hands.size() - 1:
 				last_card_attacked = true
-				print("Ostatnia karta zaatakowała, wywołanie end_turn()")
+			 
 				end_turn()
 		else:
-			print("Błąd: Indeks ", i, " przekracza rozmiar combined_hands")
+			$"../BattleManager".card_states[card.card_id]["is_alive"] = false  # Aktualizacja stanu karty
+		  
 		i += 1
 	if not last_card_attacked:
-		print("Wywołanie end_turn() po zakończeniu pętli")
+	   
 		end_turn()
-	print("Pozostałe karty: ", combined_hands)
+  
+
+	
+
 
 
 func attack_target(attacker):
 	if attacker in player_hand_reference:
 		var target = find_leftmost_card_AI()
 		if target == null:
-			print("Bezpośredni atak na AI przez:", attacker.name)
+			
 			direct_attack_on_AI(attacker)
 		else:
-			print("Atak na kartę AI przez:", attacker.name)
+			
 			attack_card(attacker, target)
 	else:
 		var target = find_leftmost_card_player()
 		if target == null:
-			print("Bezpośredni atak na gracza przez:", attacker.name)
+			
 			direct_attack_on_player(attacker)
 		else:
-			print("Atak na kartę gracza przez:", attacker.name)
+			
 			attack_card(attacker, target)
 
 func attack_card(attacker, target):
@@ -123,19 +177,19 @@ func remove_card(card):
 		combined_hands.erase(card)
 		$"../CardManager".remove_child(card)
 		$"../ShopDeck".remove_child(card)
+		card.what_card_slot.card_in_slot = false
 		card.queue_free()
-		print("Usunięto kartę z ręki gracza:", card.name)
+		
 	elif card in ai_shop_reference.AI_player_hand:
 		ai_shop_reference.AI_player_hand.erase(card)
 		combined_hands.erase(card)
 		$"../AI_Player/AI_PlayerShopDeck".remove_child(card)
 		card.queue_free()
-		print("Usunięto kartę z ręki AI:", card.name)
-
-
+		
 
 
 func end_turn():
+	update_skills()
 	#Add coins:
 	shop_deck_reference.starting_coins = shop_deck_reference.starting_coins + 10
 	ai_shop_reference.AI_starting_coins = ai_shop_reference.AI_starting_coins + 10
@@ -159,7 +213,9 @@ func end_turn():
 	#fill AI shop
 	ai_shop_reference.fill_shop(ai_shop_reference.card_scene)
 	ai_shop_reference.card_limit = 0
-	print("Stan shopa AI: ", ai_shop_reference.AI_starting_coins)
+	
+
+	
 	
 	
 
@@ -193,11 +249,9 @@ func end_game(winner):
 		print("Koniec gry: AI wygrał!")
 		$"../Player_Defeated".visible = true
 	
-	# Dodaj tutaj dowolne inne czynności kończące grę, takie jak wyświetlenie ekranu końcowego, zresetowanie gry itp.
 	
 	
-	# czyszczenie rąk graczy
-	# info kto wygrał
+
 func end_game_status():
 	$"../ShopDeck".visible = false
 	$"../PlayerDeck".visible = false
@@ -235,42 +289,11 @@ func try_again():
 	$"../Coins".visible = true
 	shop_deck_reference.starting_coins = 20
 	ai_shop_reference.AI_starting_coins = 20
-	
-
-	#var player_slots = $"../PlayerDeck".get_children()
-	#for card_slot in player_slots:
-		#card_slot.card_in_slot = false
-	#var AI_slots = $"../AI_Player/AI_PlayerHand".get_children()
-	#for card_slot in AI_slots:
-		#card_slot.card_in_slot = false
 		
 	#remove card from shop:
-	shop_deck_reference.shop_deck.clear()	
+	shop_deck_reference.shop_deck.clear()
 		
-	#shop_deck_reference.fill_shop(shop_deck_reference.card_scene)
-	#ai_shop_reference.fill_shop(ai_shop_reference.card_scene)
-	
-	
-	
-	
-	
-	#REMOVING CARDS
-	#var player_cards = $"../CardManager".get_children()
-	#for card in player_cards:
-		#$"../CardManager".remove_child(card)
-		#card.queue_free()
-	#var AI_cards = $"../AI_Player/AI_PlayerShopDeck".get_children()
-	#for card in AI_cards:
-		#$"../AI_Player/AI_PlayerShopDeck".remove_child(card)
-		#card.queue_free()
-		#
-	#combined_hands.clear()
-	#shop_deck_reference.player_hand.clear()
-	#ai_shop_reference.AI_player_hand.clear()
-		
-	
-	
-	
+
 	
 func direct_attack_on_player(attacker):
 	var starting_pos = Vector2(attacker.position.x, attacker.position.y) 
@@ -295,9 +318,6 @@ func assign_turns():
 	combined_hands = player_hand_reference + ai_shop_reference.AI_player_hand
 	for i in range(combined_hands.size()): 
 		for j in range(i + 1, combined_hands.size()): 
-			print("Player: ", player_hand_reference)
-			print("AI: ", ai_shop_reference.AI_player_hand)
-			print("Combined hands: ", combined_hands, "wartosc i: ", i, "rozmiar tablicy: ", combined_hands.size())
 			if combined_hands[i].get_node("SPD").text.to_int() < combined_hands[j].get_node("SPD").text.to_int(): 
 				var temp = combined_hands[i] 
 				combined_hands[i] = combined_hands[j] 

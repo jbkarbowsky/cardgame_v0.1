@@ -1,6 +1,6 @@
 
 
-const CARDS = {# name : health, attack, physical_defense, magical_defense, speed, cost, faction, damage_type
+const CARDS = {# name : health, attack, physical_defense, magical_defense, speed, cost, faction, damage_type, 
 	"RoyalGuard":[19, 8, 9, 5, 5, 6, "Royalty","physical"],
 	"Queen" :[20, 6, 7, 7, 7, 7, "Royalty", "magical"],
 	"KingWarlord" : [20, 8, 11, 4, 4, 8, "Royalty", "physical"],

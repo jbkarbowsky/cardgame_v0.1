@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://d0u0nu62geet6"]
+[gd_scene load_steps=25 format=3 uid="uid://d0u0nu62geet6"]
 
 [ext_resource type="Script" path="res://Scripts/CardManager.gd" id="1_j4re7"]
 [ext_resource type="PackedScene" uid="uid://ci48f34jmp61x" path="res://Scenes/CardSlot.tscn" id="3_lg1fp"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://blaf6fw571igq" path="res://Assets/AI_Defeated.png" id="17_1hh3x"]
 [ext_resource type="Texture2D" uid="uid://cv8uub2hgdh82" path="res://Assets/Try_again_normal.png" id="18_hex4t"]
 [ext_resource type="Texture2D" uid="uid://dgwnw4ydrohkh" path="res://Assets/Try_Again_pressed.png" id="19_indd1"]
+[ext_resource type="Script" path="res://Scripts/CardSpecialAbilities.gd" id="20_wxhfa"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dmyib"]
 corner_radius_top_left = 50
@@ -91,7 +92,7 @@ offset_top = 346.0
 offset_right = 1606.0
 offset_bottom = 372.0
 scale = Vector2(2, 2)
-text = "COINS:"
+text = "AI COINS:"
 metadata/_edit_use_anchors_ = true
 
 [node name="CardLimit" type="Label" parent="."]
@@ -107,10 +108,10 @@ vertical_alignment = 1
 
 [node name="NotEnoughCoins" type="Label" parent="."]
 visible = false
-offset_left = 786.0
-offset_top = 439.0
-offset_right = 965.0
-offset_bottom = 462.0
+offset_left = 102.0
+offset_top = 272.0
+offset_right = 281.0
+offset_bottom = 311.0
 scale = Vector2(2, 2)
 text = "Not enough coins! "
 horizontal_alignment = 1
@@ -274,6 +275,9 @@ texture_normal = ExtResource("18_hex4t")
 texture_pressed = ExtResource("19_indd1")
 ignore_texture_size = true
 stretch_mode = 3
+
+[node name="Card_Special_Abilities" type="Node" parent="."]
+script = ExtResource("20_wxhfa")
 
 [connection signal="mouse_entered" from="RefreshShopButton" to="ShopDeck" method="_on_refresh_shop_mouse_entered"]
 [connection signal="pressed" from="RefreshShopButton" to="ShopDeck" method="_on_refresh_shop_pressed"]
