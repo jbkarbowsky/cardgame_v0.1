@@ -15,6 +15,9 @@ var card_id_counter = 0
 var card_states = {}
 
 var battle_timer 
+
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	shop_deck_reference = $"../ShopDeck"
@@ -25,7 +28,6 @@ func _ready() -> void:
 	battle_timer.one_shot = true
 	battle_timer.wait_time = 1
 	$"../Try_again".process_mode = Node.PROCESS_MODE_ALWAYS
-	
 
 func _on_end_turn_button_pressed() -> void:
 	for child in card_manager_reference.get_children():
@@ -35,7 +37,6 @@ func _on_end_turn_button_pressed() -> void:
 	$"../Start".visible = true
 	$"../EndTurnButton".visible = false
 	$"../EndTurnButton".disabled = true
-	
 	
 func _on_next_button_pressed() -> void:
 	$"../Coins".visible = false
@@ -55,9 +56,6 @@ func _on_start_pressed() -> void:
 	$"../Player_Health_Bar".visible = true 
 	$"../Start".visible = false
 	attack()
-
-
-
 
 func update_skills():
 	for card_id in skill_vars.keys():
@@ -89,10 +87,12 @@ func update_skills():
 
 		print("Po aktualizacji:", skill_vars[card_id])
 
-
-
-
 func attack():
+	
+	$"../Card_Special_Abilities".check_faction_bonus(player_hand_reference)
+	$"../Card_Special_Abilities".check_faction_bonus(ai_shop_reference.AI_player_hand)
+	
+	
 	var i = 0
 	var last_card_attacked = false
 	while i < combined_hands.size():
@@ -114,20 +114,12 @@ func attack():
 			await battle_timer.timeout
 			if i == combined_hands.size() - 1:
 				last_card_attacked = true
-			 
 				end_turn()
 		else:
-			$"../BattleManager".card_states[card.card_id]["is_alive"] = false  # Aktualizacja stanu karty
-		  
+			$"../BattleManager".card_states[card.card_id]["is_alive"] = false 
 		i += 1
 	if not last_card_attacked:
-	   
 		end_turn()
-  
-
-	
-
-
 
 func attack_target(attacker):
 	if attacker in player_hand_reference:
@@ -148,6 +140,11 @@ func attack_target(attacker):
 			attack_card(attacker, target)
 
 func attack_card(attacker, target):
+	if target.card_id in $"../BattleManager".skill_vars:
+		var dodge_chance = $"../BattleManager".skill_vars[target.card_id].get("crossbowman_dodge_chance", 0)
+		if target.get_node("Name").text == "Crossbowman" and randf() < dodge_chance:
+			print("Crossbowman uniknął ataku!")
+			return  # Uniknięcie ataku
 	var starting_pos = Vector2(attacker.position.x, attacker.position.y)
 	var new_pos
 	if attacker in ai_shop_reference.AI_player_hand:
@@ -159,12 +156,13 @@ func attack_card(attacker, target):
 	await tween.finished
 	var targetHP = target.get_node("HP").text.to_int()
 	var attackerATK = attacker.get_node("Attack").text.to_int()
-	targetHP -= attackerATK
+	var targetDEF = target.get_node("DEF").text.to_int()
+	var actual_damage = max(1, int(attackerATK * (100 / (100 + targetDEF))))
+	targetHP -= actual_damage
 	if targetHP <= 0:
 		target.is_alive = false
 		target.what_card_slot.card_in_slot = false
 		remove_card(target)
-		
 	else:
 		target.get_node("HP").text = str(targetHP)
 	var tween2 = get_tree().create_tween()
@@ -185,8 +183,6 @@ func remove_card(card):
 		combined_hands.erase(card)
 		$"../AI_Player/AI_PlayerShopDeck".remove_child(card)
 		card.queue_free()
-		
-
 
 func end_turn():
 	update_skills()
@@ -215,12 +211,6 @@ func end_turn():
 	ai_shop_reference.card_limit = 0
 	
 
-	
-	
-	
-
-
-
 func direct_attack_on_AI(attacker):
 	var starting_pos = Vector2(attacker.position.x, attacker.position.y) 
 	var new_pos = Vector2($"../AI_Health_Bar".position.x + 350, $"../AI_Health_Bar".position.y + 20)
@@ -248,9 +238,7 @@ func end_game(winner):
 		end_game_status()
 		print("Koniec gry: AI wygrał!")
 		$"../Player_Defeated".visible = true
-	
-	
-	
+
 
 func end_game_status():
 	$"../ShopDeck".visible = false
@@ -272,8 +260,6 @@ func _on_try_again_pressed() -> void:
 	try_again()
 	
 
-
-
 func try_again():
 	$"../AI_Player_Defeated".visible = false
 	$"../Player_Defeated".visible = false
@@ -292,9 +278,7 @@ func try_again():
 		
 	#remove card from shop:
 	shop_deck_reference.shop_deck.clear()
-		
 
-	
 func direct_attack_on_player(attacker):
 	var starting_pos = Vector2(attacker.position.x, attacker.position.y) 
 	var new_pos = Vector2($"../Player_Health_Bar".position.x + 350, $"../Player_Health_Bar".position.y - 20)
@@ -312,7 +296,6 @@ func direct_attack_on_player(attacker):
 	if PLAYER_HEALTH <= 0:
 		print("AI wygrał!")
 		end_game("AI")
-
 
 func assign_turns():
 	combined_hands = player_hand_reference + ai_shop_reference.AI_player_hand

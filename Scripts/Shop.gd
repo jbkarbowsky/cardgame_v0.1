@@ -92,7 +92,7 @@ func random_card_draw(card):
 	card.get_node("Attack").text = str(card_dbase_reference.CARDS[name][1])
 	card.get_node("SPD").text = str(card_dbase_reference.CARDS[name][4])
 	card.get_node("Cost").text = str(card_dbase_reference.CARDS[name][5])
-	card.get_node("Fraction").text = str(card_dbase_reference.CARDS[name][6])
+	card.get_node("Faction").text = str(card_dbase_reference.CARDS[name][6])
 	card.get_node("DEF").text = "DEF: " + str(card_dbase_reference.CARDS[name][2])
 	return card 
 	
@@ -119,4 +119,3 @@ func animate_card_to_pos(card, pos):
 	var tween = get_tree().create_tween()
 	tween.tween_property(card,"position", pos, 0.5)
 	
-# Called every frame. 'delta' is the elapsed time since the previous frame.

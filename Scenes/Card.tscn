@@ -98,7 +98,7 @@ text = "Lancer"
 fit_content = true
 scroll_active = false
 
-[node name="Fraction" type="RichTextLabel" parent="."]
+[node name="Faction" type="RichTextLabel" parent="."]
 offset_left = -30.0
 offset_top = -84.545
 offset_right = 110.0

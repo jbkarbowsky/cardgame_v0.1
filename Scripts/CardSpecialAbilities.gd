@@ -1,15 +1,13 @@
 extends Node
 
-
-
 func apply_ability(card, owner):
 	if not card.card_id:
 		$"../BattleManager".card_id_counter += 1
 		card.card_id = $"../BattleManager".card_id_counter
 		$"../BattleManager".skill_vars[card.card_id] = {
 			"card_name": "", "current_cooldown": 0, "current_duration": 0, "skill_cooldown": 0,
-			"skill_duration": 0, "owner": owner, "deactivated": false, "deactivation_pending": false,
-			"royal_guard_buffed_cards": [], "knight_buffed_cards": [], "kingwarlord_buffed_cards": [], "monk_debuffed_cards": [], "paladin_healed_cards": []
+			"skill_duration": 0, "owner": owner, "deactivated": false,
+			"royal_guard_buffed_cards": [], "knight_buffed_cards": [], "kingwarlord_buffed_cards": [], "monk_debuffed_cards": [], "crossbowman_dodge_chance": 0.2
 		}
 		$"../BattleManager".card_states[card.card_id] = {"is_alive": card.is_alive}
 		match card.get_node("Name").text:
@@ -40,8 +38,58 @@ func apply_ability(card, owner):
 			"Archer":
 				$"../BattleManager".skill_vars[card.card_id]["card_name"] = "Archer"
 				$"../BattleManager".skill_vars[card.card_id]["skill_cooldown"] = 0
-				$"../BattleManager".skill_vars[card.card_id]["skill_duration"] = 0
+				$"../BattleManager".skill_vars[card.card_id]["skill_duration"] = 1
+			"Crossbowman":
+				$"../BattleManager".skill_vars[card.card_id]["card_name"] = "Crossbowman"
+				$"../BattleManager".skill_vars[card.card_id]["skill_cooldown"] = 0
+				$"../BattleManager".skill_vars[card.card_id]["skill_duration"] = 1
+				$"../BattleManager".skill_vars[card.card_id]["crossbowman_dodge_chance"] = 0.2
+				
 		print("Przypisano umiejętność:", $"../BattleManager".skill_vars[card.card_id])
+
+
+func check_faction_bonus(hand):
+	var faction_count = {
+		"Royality": 0,
+		"Archers": 0,
+		"Knighthood": 0,
+		"Clerics": 0
+	}
+	for card in hand:
+		var faction = card.get_node("Faction").text
+		if faction in faction_count:
+			faction_count[faction] += 1
+
+	for faction in faction_count.keys():
+		if faction_count[faction] >= 3:
+			apply_faction_bonus(hand, faction)
+		else:
+			remove_faction_bonus(hand, faction)
+
+func apply_faction_bonus(hand, faction):
+	for card in hand:
+		if card.get_node("Faction").text == faction:
+			var card_attack = int(card.get_node("Attack").text)
+			var card_defense = int(card.get_node("DEF").text)
+			card_attack += 1
+			card_defense += 1
+			card.get_node("Attack").text = str(card_attack)
+			card.get_node("DEF").text = str(card_defense)
+			print(faction, " bonus applied to ", card.get_node("Name").text)
+
+func remove_faction_bonus(hand, faction):
+	for card in hand:
+		if card.get_node("Faction").text == faction:
+			var card_attack = int(card.get_node("Attack").text)
+			var card_defense = int(card.get_node("DEF").text)
+			if card_attack > 0 and card_defense > 0:
+				card_attack -= 1
+				card_defense -= 1
+				card.get_node("Attack").text = str(card_attack)
+				card.get_node("DEF").text = str(card_defense)
+				print(faction, " bonus removed from ", card.get_node("Name").text)
+
+
 
 
 
@@ -67,7 +115,10 @@ func activate_skill(card, hand):
 			activate_paladin_ability(card.card_id, hand)
 		"Archer":
 			activate_archer_ability(card.card_id, hand)
-
+		"Crossbowman":
+			activate_crossbowman_ability(card.card_id, hand)
+		"Longbowman":
+			activate_longbowman_ability(card.card_id, hand)
 
 func deactivate_skill(card_id, hand):
 	match $"../BattleManager".skill_vars[card_id]["card_name"]:
@@ -83,8 +134,37 @@ func deactivate_skill(card_id, hand):
 			deactivate_monk_ability(card_id, hand)
 		"Archer":
 			deactivate_archer_ability(card_id, hand)
+		"Longbowman":
+			deactivate_longbowman_ability(card_id, hand)
 
+func activate_longbowman_ability(card_id, hand):
+	var rightmost_card = hand[0]
+	for card in hand:
+		if card.position.x > rightmost_card.position.x:
+			rightmost_card = card
+	if rightmost_card.card_id == card_id:
+		for card in hand:
+			if card.card_id == card_id:
+				var card_attack = int(card.get_node("Attack").text)
+				card_attack += 2  # Zwiększenie ataku o 2, gdy jest najbardziej po prawej
+				card.get_node("Attack").text = str(card_attack)
+				$"../BattleManager".skill_vars[card.card_id]["current_duration"] = 1  # Ustawienie czasu trwania na jedną turę
+				print("Longbowman jest najbardziej po prawej: +2 do ataku")
 
+func deactivate_longbowman_ability(card_id, hand):
+	for card in hand:
+		if card.card_id == card_id and card.get_node("Name").text == "Longbowman":
+			var card_attack = int(card.get_node("Attack").text)
+			card_attack -= 2  # Przywrócenie nominalnego ataku
+			card.get_node("Attack").text = str(card_attack)
+			print("Dezaktywowano umiejętność Longbowman, przywrócono nominalny atak")
+
+func activate_crossbowman_ability(card, hand):
+	var target = find_lowest_health_card($"../AI_Player/AI_PlayerShopDeck".AI_player_hand)
+	if target != null:
+		$"../BattleManager".attack_card(card,target)
+		print("Crossbowman atakuje cel z najniższym HP")
+ 
 func activate_archer_ability(card_id, hand):
 	for card in hand:
 		if card.card_id == card_id:
@@ -105,7 +185,6 @@ func deactivate_archer_ability(card_id, hand):
 			card_attack -= 3  # Przywrócenie nominalnego ataku
 			card.get_node("Attack").text = str(card_attack)
 			print("Dezaktywowano umiejętność Archera, przywrócono nominalny atak")
-
 
 func activate_paladin_ability(card_id, hand):
 	if $"../BattleManager".skill_vars[card_id]["current_duration"] == 0:
