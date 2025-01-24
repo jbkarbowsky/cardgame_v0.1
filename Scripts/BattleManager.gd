@@ -17,7 +17,6 @@ var card_states = {}
 var battle_timer 
 
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	shop_deck_reference = $"../ShopDeck"
@@ -37,8 +36,10 @@ func _on_end_turn_button_pressed() -> void:
 	$"../Start".visible = true
 	$"../EndTurnButton".visible = false
 	$"../EndTurnButton".disabled = true
+	$"../AICoins".visible = false
 	
 func _on_next_button_pressed() -> void:
+	$"../AICoins".visible = true
 	$"../Coins".visible = false
 	$"../RefreshShopButton".visible = false
 	$"../NextButton".visible = false

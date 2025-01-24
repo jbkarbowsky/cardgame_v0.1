@@ -95,17 +95,6 @@ scale = Vector2(2, 2)
 text = "AI COINS:"
 metadata/_edit_use_anchors_ = true
 
-[node name="CardLimit" type="Label" parent="."]
-visible = false
-offset_left = 786.0
-offset_top = 439.0
-offset_right = 965.0
-offset_bottom = 462.0
-scale = Vector2(2, 2)
-text = "You have MAX cards"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="NotEnoughCoins" type="Label" parent="."]
 visible = false
 offset_left = 102.0
@@ -116,6 +105,18 @@ scale = Vector2(2, 2)
 text = "Not enough coins! "
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Hand_deck_limit" type="Label" parent="."]
+visible = false
+offset_left = 102.0
+offset_top = 215.0
+offset_right = 308.0
+offset_bottom = 295.0
+scale = Vector2(2, 2)
+text = "You have reach the limit of cards in hand! "
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="RefreshShopButton" type="TextureButton" parent="."]
 offset_left = 129.0

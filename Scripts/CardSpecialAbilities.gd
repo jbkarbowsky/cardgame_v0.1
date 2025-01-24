@@ -74,7 +74,8 @@ func apply_faction_bonus(hand, faction):
 			card_attack += 1
 			card_defense += 1
 			card.get_node("Attack").text = str(card_attack)
-			card.get_node("DEF").text = str(card_defense)
+			card.get_node("DEF").text = "DEF: " + str(card_defense)
+			card.set_meta("faction_bonus", true)
 			print(faction, " bonus applied to ", card.get_node("Name").text)
 
 func remove_faction_bonus(hand, faction):
@@ -82,11 +83,12 @@ func remove_faction_bonus(hand, faction):
 		if card.get_node("Faction").text == faction:
 			var card_attack = int(card.get_node("Attack").text)
 			var card_defense = int(card.get_node("DEF").text)
-			if card_attack > 0 and card_defense > 0:
+			if card_attack > 0 and card_defense > 0 and card.has_meta("fraction_bonus") == true:
 				card_attack -= 1
 				card_defense -= 1
 				card.get_node("Attack").text = str(card_attack)
-				card.get_node("DEF").text = str(card_defense)
+				card.get_node("DEF").text = "DEF: " + str(card_defense)
+				card.set_meta("faction_bonus", false)
 				print(faction, " bonus removed from ", card.get_node("Name").text)
 
 
@@ -116,7 +118,7 @@ func activate_skill(card, hand):
 		"Archer":
 			activate_archer_ability(card.card_id, hand)
 		"Crossbowman":
-			activate_crossbowman_ability(card.card_id, hand)
+			activate_crossbowman_ability(card, hand)
 		"Longbowman":
 			activate_longbowman_ability(card.card_id, hand)
 

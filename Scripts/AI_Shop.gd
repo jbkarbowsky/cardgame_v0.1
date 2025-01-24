@@ -16,24 +16,61 @@ var AI_player_hand = []
 var AI_shop_deck_reference
 var card_limit = 5
 
+func check_faction_bonus(hand):
+	var faction_count = {
+		"Royality": 0,
+		"Archers": 0,
+		"Knighthood": 0,
+		"Clerics": 0
+	}
+	for card in hand:
+		var faction = card.get_node("Faction").text
+		if faction in faction_count:
+			faction_count[faction] += 1
+
+	var most_common_faction = ""
+	var highest_count = 0
+	for faction in faction_count.keys():
+		if faction_count[faction] > highest_count:
+			highest_count = faction_count[faction]
+			most_common_faction = faction
+			
+		if faction_count.has(most_common_faction) and faction_count[most_common_faction] == 0:
+			return ""
+		else:
+			return most_common_faction
+
+
+
 func pick_card():
 	var picked_card = null
-	var highest_HP = 0
-	for card in AI_shop_deck:
-		var card_HP = int(card.get_node("HP").text)
-		var cost = int(card.get_node("Cost").text)
-		if cost <= AI_starting_coins and card_HP > highest_HP:
-			highest_HP = card_HP
-			picked_card = card
-	if picked_card:
-		AI_shop_deck.erase(picked_card)
-		AI_starting_coins -= int(picked_card.get_node("Cost").text)
-		$"../../AICoins".text = str(AI_starting_coins)
+	var faction_card = check_faction_bonus(AI_shop_deck)
+	print(faction_card)
+	if faction_card != "":
+		for card in AI_shop_deck:
+			var cost = int(card.get_node("Cost").text)
+			if card.get_node("Faction").text == faction_card and cost <= AI_starting_coins:
+				picked_card = card
+			AI_player_hand.erase(picked_card)
+	else:
+		var temp_most_value = 0
+		for card in AI_shop_deck:
+			var SPD = card.get_node("SPD").text.to_int()
+			var ATK = card.get_node("Attack").text.to_int()
+			var combined_SPD_ATK = SPD+ATK
+			if combined_SPD_ATK > temp_most_value:
+				picked_card=card
+			AI_player_hand.erase(picked_card)
 	return picked_card
 
 func add_card_to_hand():
 	for i in range(5):
 		var picked_card = pick_card()
+		
+		
+		AI_starting_coins -= int(picked_card.get_node("Cost").text)
+		$"../../AICoins".text = "AI coins: " + str(AI_starting_coins)
+		
 		if picked_card:
 			var slot_found = false
 			for j in range($"../AI_PlayerHand".get_child_count()):
@@ -46,7 +83,7 @@ func add_card_to_hand():
 					card_slot.card_in_slot = true
 					slot_found = true
 					AI_player_hand.append(picked_card)
-					break  # Przerwij pętlę, gdy znajdziesz pusty slot
+					break 
 			if not slot_found:
 				print("Nie znaleziono pustego slotu dla karty AI:", picked_card.name)
 
@@ -112,6 +149,3 @@ func update_card_positions():
 func animate_card_to_pos(card, pos):
 	var tween = get_tree().create_tween()
 	tween.tween_property(card, "position", pos, 0.5)
-
-func _process(delta: float) -> void:
-	pass

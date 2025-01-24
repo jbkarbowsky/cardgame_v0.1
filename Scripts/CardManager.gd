@@ -9,7 +9,7 @@ var is_dragging = false
 var is_hovering_on_card
 var shop_deck_reference
 var player_hand = []
-
+var battle_timer
 # Card slot counter to place cards
 var counter = 0
 
@@ -21,6 +21,9 @@ func connect_card_signals(card):
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	shop_deck_reference = $"../ShopDeck"
+	battle_timer = $"../BattleTimer"
+	battle_timer.one_shot = true
+	battle_timer.wait_time = 1
 
 # Mouse handler
 func _input(event):
@@ -57,13 +60,19 @@ func pick_card(card):
 				break
 		
 		if card_slot != null:
-			card.get_node("Area2D/CollisionShape2D").disabled = true
-			shop_deck_reference.animate_card_to_pos(card, pos)
-			card.card_in_player_field = true
-			card_slot.card_in_slot = true
-			card.what_card_slot = card_slot
-			player_hand.append(card)
-			shop_deck_reference.shop_deck.erase(card)
+			if player_hand.size() >= 5:
+				$"../Hand_deck_limit".visible = true
+				battle_timer.start()
+				await battle_timer.timeout
+				$"../Hand_deck_limit".visible = false
+			else:	
+				card.get_node("Area2D/CollisionShape2D").disabled = true
+				shop_deck_reference.animate_card_to_pos(card, pos)
+				card.card_in_player_field = true
+				card_slot.card_in_slot = true
+				card.what_card_slot = card_slot
+				player_hand.append(card)
+				shop_deck_reference.shop_deck.erase(card)
 
 
 # Card dragging
@@ -83,13 +92,13 @@ func finish_drag():
 	if card_slot_found:
 		if card_found and card_found != card_dragged:
 			card_found.position = card_dragged_initial_position
-			card_found.what_card_slot.card_in_slot = true 
+			card_slot_found.card_in_slot = true 
 			card_dragged.what_card_slot.card_in_slot = true
 			card_dragged.position = card_slot_found.position
 		else:
 			card_dragged.what_card_slot.card_in_slot = false 
 			card_dragged.position = card_slot_found.position
-			card_slot_found.card_in_slot = true
+			card_slot_found.card_in_slot = false
 	else:
 		add_card_to_hand(card_dragged, card_dragged_initial_position)
 	card_dragged = null
