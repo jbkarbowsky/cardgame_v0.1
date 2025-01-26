@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://d0u0nu62geet6"]
+[gd_scene load_steps=26 format=3 uid="uid://d0u0nu62geet6"]
 
 [ext_resource type="Script" path="res://Scripts/CardManager.gd" id="1_j4re7"]
 [ext_resource type="PackedScene" uid="uid://ci48f34jmp61x" path="res://Scenes/CardSlot.tscn" id="3_lg1fp"]
@@ -16,6 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://b0xbpdpb1e7s6" path="res://Assets/start-normal.png" id="14_30myj"]
 [ext_resource type="Texture2D" uid="uid://b6khf8ftj3to1" path="res://Assets/Start-presse.png" id="15_erf51"]
 [ext_resource type="Texture2D" uid="uid://b4j7q3u586ciq" path="res://Assets/Player_Defeated.png" id="16_yup4w"]
+[ext_resource type="FontFile" uid="uid://c14ipf6odeg28" path="res://Assets/Rakkas-Regular.ttf" id="16_yxiqg"]
 [ext_resource type="Texture2D" uid="uid://blaf6fw571igq" path="res://Assets/AI_Defeated.png" id="17_1hh3x"]
 [ext_resource type="Texture2D" uid="uid://cv8uub2hgdh82" path="res://Assets/Try_again_normal.png" id="18_hex4t"]
 [ext_resource type="Texture2D" uid="uid://dgwnw4ydrohkh" path="res://Assets/Try_Again_pressed.png" id="19_indd1"]
@@ -208,11 +209,12 @@ rounded = true
 
 [node name="AI_Health" type="RichTextLabel" parent="AI_Health_Bar"]
 layout_mode = 0
-offset_left = 235.0
-offset_top = 31.0
-offset_right = 414.0
-offset_bottom = 71.0
+offset_left = 255.0
+offset_top = 47.0
+offset_right = 434.0
+offset_bottom = 87.0
 scale = Vector2(2, 2)
+theme_override_fonts/normal_font = ExtResource("16_yxiqg")
 text = "Opponent Health "
 
 [node name="Player_Health_Bar" type="ProgressBar" parent="."]
@@ -227,11 +229,12 @@ rounded = true
 
 [node name="Player_Health" type="RichTextLabel" parent="Player_Health_Bar"]
 layout_mode = 0
-offset_left = 268.0
-offset_top = 33.0
-offset_right = 379.0
-offset_bottom = 73.0
+offset_left = 286.0
+offset_top = 46.0
+offset_right = 397.0
+offset_bottom = 86.0
 scale = Vector2(2, 2)
+theme_override_fonts/normal_font = ExtResource("16_yxiqg")
 text = "Player Health
 "
 

@@ -1,7 +1,7 @@
 extends Node
 
-var PLAYER_HEALTH = 20
-var AI_HEALTH = 20
+var PLAYER_HEALTH = 100
+var AI_HEALTH = 100
 
 var shop_deck_reference
 var card_manager_reference 
@@ -31,7 +31,10 @@ func _ready() -> void:
 func _on_end_turn_button_pressed() -> void:
 	for child in card_manager_reference.get_children():
 		child.get_node("Area2D/CollisionShape2D").disabled = true
-	ai_shop_reference.add_card_to_hand()
+	
+	
+	
+	ai_shop_reference.fill_card_slots()
 	ai_shop_reference.clear_shop()
 	$"../Start".visible = true
 	$"../EndTurnButton".visible = false
@@ -57,6 +60,9 @@ func _on_start_pressed() -> void:
 	$"../Player_Health_Bar".visible = true 
 	$"../Start".visible = false
 	attack()
+	
+	
+	
 
 func update_skills():
 	for card_id in skill_vars.keys():
@@ -186,6 +192,7 @@ func remove_card(card):
 		card.queue_free()
 
 func end_turn():
+	
 	update_skills()
 	#Add coins:
 	shop_deck_reference.starting_coins = shop_deck_reference.starting_coins + 10
@@ -207,9 +214,11 @@ func end_turn():
 	shop_deck_reference.fill_shop(shop_deck_reference.card_scene)
 	$"../CardManager".counter = 0
 	
+	ai_shop_reference.AI_shop_deck.clear()
 	#fill AI shop
 	ai_shop_reference.fill_shop(ai_shop_reference.card_scene)
 	ai_shop_reference.card_limit = 0
+	
 	
 
 func direct_attack_on_AI(attacker):

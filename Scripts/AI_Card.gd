@@ -8,3 +8,6 @@ var what_card_slot
 var current_duration = 10
 var current_cooldown = 10
 var card_id = 0
+
+func is_card() -> bool:
+	return true
