@@ -106,9 +106,9 @@ func attack():
 		var card = combined_hands[i]
 		if not card.card_id:
 			var owner = "player" if card in player_hand_reference else "AI"
-			$"../Card_Special_Abilities".apply_ability(card, owner)  # Przypisanie umiejętności do karty
+			$"../Card_Special_Abilities".apply_ability(card, owner)
 		if card.is_alive:
-			$"../BattleManager".card_states[card.card_id]["is_alive"] = true  # Aktualizacja stanu karty
+			$"../BattleManager".card_states[card.card_id]["is_alive"] = true
 			if $"../BattleManager".skill_vars[card.card_id]["current_cooldown"] == 0:
 				$"../BattleManager".skill_vars[card.card_id]["deactivated"] = false
 				if card in ai_shop_reference.AI_player_hand:
@@ -164,7 +164,7 @@ func attack_card(attacker, target):
 	var targetHP = target.get_node("HP").text.to_int()
 	var attackerATK = attacker.get_node("Attack").text.to_int()
 	var targetDEF = target.get_node("DEF").text.to_int()
-	var actual_damage = max(1, int(attackerATK * (100 / (100 + targetDEF))))
+	var actual_damage = max(1, int(attackerATK * (100 / (75 + targetDEF))))
 	targetHP -= actual_damage
 	if targetHP <= 0:
 		target.is_alive = false
@@ -232,7 +232,8 @@ func direct_attack_on_AI(attacker):
 	tween2.tween_property(attacker, "position", starting_pos, MOVE_SPEED)
 	
 	var attack = attacker.get_node("Attack").text.to_int()
-	AI_HEALTH -= attack
+	AI_HEALTH -= attack * 2
+	
 	$"../AI_Health_Bar".value = AI_HEALTH
 	
 	if AI_HEALTH <= 0:
@@ -256,13 +257,6 @@ func end_game_status():
 	$"../AI_Player".visible = false
 	$"../Try_again".visible = true
 	$"..".get_tree().paused = true
-	
-	
-		#oprogramowanie zagraj ponownie buttona który będzie wracał do początku gry
-		
-		
-		#czyli - losowanie shopa, reset stanu HP przeciwników, czyszczenie tablic z kart i dzieci, 
-		#wlaczenie przyciskow Coins, Next, Refresh
 
 func _on_try_again_pressed() -> void:
 	$"..".get_tree().paused = false
@@ -278,8 +272,8 @@ func try_again():
 	$"../PlayerDeck".visible = true
 	$"../AI_Player".visible = true
 	
-	AI_HEALTH = 20
-	PLAYER_HEALTH = 20
+	AI_HEALTH = 100
+	PLAYER_HEALTH = 100
 	$"../RefreshShopButton".visible = true
 	$"../NextButton".visible = true
 	$"../Coins".visible = true
@@ -300,7 +294,7 @@ func direct_attack_on_player(attacker):
 	tween2.tween_property(attacker, "position", starting_pos, MOVE_SPEED)
 	
 	var attack = attacker.get_node("Attack").text.to_int()
-	PLAYER_HEALTH -= attack
+	PLAYER_HEALTH -= attack * 2
 	$"../Player_Health_Bar".value = PLAYER_HEALTH
 	
 	if PLAYER_HEALTH <= 0:

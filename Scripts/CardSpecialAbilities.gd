@@ -92,9 +92,6 @@ func remove_faction_bonus(hand, faction):
 				print(faction, " bonus removed from ", card.get_node("Name").text)
 
 
-
-
-
 func activate_skill(card, hand):
 	match card.get_node("Name").text:
 		"RoyalGuard":

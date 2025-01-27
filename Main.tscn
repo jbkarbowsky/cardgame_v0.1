@@ -9,7 +9,6 @@
 [ext_resource type="Texture2D" uid="uid://c5nbr74ji46r7" path="res://Assets/Next_pressed.png" id="7_3uq41"]
 [ext_resource type="PackedScene" uid="uid://cptw8kr3fyybb" path="res://Scenes/AI_CardSlot.tscn" id="8_45ctm"]
 [ext_resource type="Script" path="res://Scripts/AI_Shop.gd" id="8_e5dt1"]
-[ext_resource type="Script" path="res://Scripts/AI_Player.gd" id="8_pvw2x"]
 [ext_resource type="Script" path="res://Scripts/BattleManager.gd" id="11_dnmta"]
 [ext_resource type="Texture2D" uid="uid://cumi0tc8iw6dj" path="res://Assets/EndTurn-Normal.png" id="12_whc3e"]
 [ext_resource type="Texture2D" uid="uid://8vn6erdvu3rw" path="res://Assets/EndTurn_pressed.png" id="13_x52in"]
@@ -21,6 +20,20 @@
 [ext_resource type="Texture2D" uid="uid://cv8uub2hgdh82" path="res://Assets/Try_again_normal.png" id="18_hex4t"]
 [ext_resource type="Texture2D" uid="uid://dgwnw4ydrohkh" path="res://Assets/Try_Again_pressed.png" id="19_indd1"]
 [ext_resource type="Script" path="res://Scripts/CardSpecialAbilities.gd" id="20_wxhfa"]
+
+[sub_resource type="GDScript" id="GDScript_qwdd3"]
+script/source = "extends Node2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dmyib"]
 corner_radius_top_left = 50
@@ -142,7 +155,7 @@ ignore_texture_size = true
 stretch_mode = 3
 
 [node name="AI_Player" type="Node2D" parent="."]
-script = ExtResource("8_pvw2x")
+script = SubResource("GDScript_qwdd3")
 
 [node name="AI_PlayerHand" type="Node2D" parent="AI_Player"]
 

@@ -30,9 +30,12 @@ func _input(event):
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			var card = raycast_for_card()
-			if card and counter < 5 and card not in player_hand:
-				if ! await shop_deck_reference.update_coins(card):
+			if card and player_hand.size() < 5 and card not in player_hand:
+				if not await shop_deck_reference.update_coins(card):
 					pick_card(card)
+			elif player_hand.size() >= 5:
+				print("card limit")
+
 			elif card in player_hand:
 				start_drag(card)
 		else:
@@ -44,14 +47,14 @@ func _input(event):
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
 		is_dragging = false
 
-# Click on card in shop - Buy unit
+
 func pick_card(card):
 	if card in shop_deck_reference.shop_deck:
 		var node = $"../PlayerDeck"
 		var pos = null
 		var card_slot = null
 		
-		# Znajdź pierwszy wolny slot
+	
 		for i in range(node.get_child_count()):
 			var temp_slot = node.get_child(i)
 			if not temp_slot.card_in_slot:

@@ -162,7 +162,6 @@ func random_card_draw(card):
 	card.get_node("Cost").text = str(card_dbase_reference.CARDS[name][5])
 	card.get_node("Faction").text = str(card_dbase_reference.CARDS[name][6])
 	card.get_node("DEF").text = "DEF: " + str(card_dbase_reference.CARDS[name][2])
-	#health, attack, physical_defense, magical_defense, speed, cost, faction, damage_type
 	return card
 
 func calculate_card_position(index):
