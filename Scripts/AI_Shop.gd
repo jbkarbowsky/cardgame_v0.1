@@ -73,11 +73,11 @@ func pick_card():
 			if preffered_faction == card_faction and card_cost <= AI_starting_coins:
 				AI_shop_deck.erase(card)
 				AI_starting_coins -= card_cost
-				$"../../AICoins".text = str(AI_starting_coins)
+				$"../../AICoins".text =  "AI Coins: " + str(AI_starting_coins)
 				add_card_to_hand(card)
 				card.card_in_player_field = true
 				print("Karta dodana do slotu: ", card.name)
-				return card  # Wyjdź z funkcji po znalezieniu odpowiedniej karty
+				return card
 
 	# Jeśli nie znaleziono karty zgodnej z preferowaną frakcją, wybierz najlepszą kartę według SPD i ATK
 	for card in AI_shop_deck:
@@ -91,7 +91,7 @@ func pick_card():
 	if best_card != null:
 		AI_shop_deck.erase(best_card)
 		AI_starting_coins -= best_card.get_node("Cost").text.to_int()
-		$"../../AICoins".text = str(AI_starting_coins)
+		$"../../AICoins".text = "AI Coins: " + str(AI_starting_coins)
 		add_card_to_hand(best_card)
 		best_card.card_in_player_field = true
 		print("Karta dodana do slotu: ", best_card.name)
@@ -127,7 +127,7 @@ func _ready() -> void:
 	center_screen_x = get_viewport().size.x / 2
 	card_dbase_reference = preload("res://Scripts/CardDatabase.gd")
 	fill_shop(card_scene)
-	$"../../AICoins".text =  "Coins: " + str(AI_starting_coins)
+	$"../../AICoins".text =  "AI Coins: " + str(AI_starting_coins)
 
 func clear_shop():
 	var parent = $"."

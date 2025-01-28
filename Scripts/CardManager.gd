@@ -53,8 +53,7 @@ func pick_card(card):
 		var node = $"../PlayerDeck"
 		var pos = null
 		var card_slot = null
-		
-	
+
 		for i in range(node.get_child_count()):
 			var temp_slot = node.get_child(i)
 			if not temp_slot.card_in_slot:

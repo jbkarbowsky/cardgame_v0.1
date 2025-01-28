@@ -31,9 +31,6 @@ func _ready() -> void:
 func _on_end_turn_button_pressed() -> void:
 	for child in card_manager_reference.get_children():
 		child.get_node("Area2D/CollisionShape2D").disabled = true
-	
-	
-	
 	ai_shop_reference.fill_card_slots()
 	ai_shop_reference.clear_shop()
 	$"../Start".visible = true
@@ -147,11 +144,13 @@ func attack_target(attacker):
 			attack_card(attacker, target)
 
 func attack_card(attacker, target):
+	print("Attacker:", attacker.name, "Target:", target.name)
+
 	if target.card_id in $"../BattleManager".skill_vars:
 		var dodge_chance = $"../BattleManager".skill_vars[target.card_id].get("crossbowman_dodge_chance", 0)
 		if target.get_node("Name").text == "Crossbowman" and randf() < dodge_chance:
-			print("Crossbowman uniknął ataku!")
-			return  # Uniknięcie ataku
+			print("Crossbowman dodged the attack")
+			return
 	var starting_pos = Vector2(attacker.position.x, attacker.position.y)
 	var new_pos
 	if attacker in ai_shop_reference.AI_player_hand:
@@ -164,17 +163,19 @@ func attack_card(attacker, target):
 	var targetHP = target.get_node("HP").text.to_int()
 	var attackerATK = attacker.get_node("Attack").text.to_int()
 	var targetDEF = target.get_node("DEF").text.to_int()
-	var actual_damage = max(1, int(attackerATK * (100 / (75 + targetDEF))))
+	var actual_damage = max(1, int(attackerATK * (100 / (85 + targetDEF))))
 	targetHP -= actual_damage
 	if targetHP <= 0:
 		target.is_alive = false
 		target.what_card_slot.card_in_slot = false
+		print("Removing target card:", target.name)
 		remove_card(target)
 	else:
 		target.get_node("HP").text = str(targetHP)
 	var tween2 = get_tree().create_tween()
 	tween2.tween_property(attacker, "position", starting_pos, MOVE_SPEED)
 	await tween2.finished
+
 
 func remove_card(card):
 	if card in player_hand_reference:
@@ -192,12 +193,10 @@ func remove_card(card):
 		card.queue_free()
 
 func end_turn():
-	
 	update_skills()
 	#Add coins:
 	shop_deck_reference.starting_coins = shop_deck_reference.starting_coins + 10
 	ai_shop_reference.AI_starting_coins = ai_shop_reference.AI_starting_coins + 10
-
 	# Clear the shop deck
 	for card in shop_deck_reference.get_children():
 		card.queue_free()
@@ -218,7 +217,6 @@ func end_turn():
 	#fill AI shop
 	ai_shop_reference.fill_shop(ai_shop_reference.card_scene)
 	ai_shop_reference.card_limit = 0
-	
 	
 
 func direct_attack_on_AI(attacker):

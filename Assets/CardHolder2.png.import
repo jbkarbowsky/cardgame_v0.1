@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://t8144640k2f0"
-path="res://.godot/imported/CardHolder.png-afca90015f643fc44252cc194b7c5f4d.ctex"
+uid="uid://bxuo8vs8wmq2p"
+path="res://.godot/imported/CardHolder2.png-3d1a6897e3e616cf10ec49171d662682.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/CardHolder.png"
-dest_files=["res://.godot/imported/CardHolder.png-afca90015f643fc44252cc194b7c5f4d.ctex"]
+source_file="res://Assets/CardHolder2.png"
+dest_files=["res://.godot/imported/CardHolder2.png-3d1a6897e3e616cf10ec49171d662682.ctex"]
 
 [params]
 

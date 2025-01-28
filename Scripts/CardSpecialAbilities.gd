@@ -7,7 +7,8 @@ func apply_ability(card, owner):
 		$"../BattleManager".skill_vars[card.card_id] = {
 			"card_name": "", "current_cooldown": 0, "current_duration": 0, "skill_cooldown": 0,
 			"skill_duration": 0, "owner": owner, "deactivated": false,
-			"royal_guard_buffed_cards": [], "knight_buffed_cards": [], "kingwarlord_buffed_cards": [], "monk_debuffed_cards": [], "crossbowman_dodge_chance": 0.2
+			"royal_guard_buffed_cards": [], "knight_buffed_cards": [], "kingwarlord_buffed_cards": [],
+			"monk_debuffed_cards": [], "crossbowman_dodge_chance": 0.2
 		}
 		$"../BattleManager".card_states[card.card_id] = {"is_alive": card.is_alive}
 		match card.get_node("Name").text:
@@ -159,7 +160,7 @@ func deactivate_longbowman_ability(card_id, hand):
 			print("Dezaktywowano umiejętność Longbowman, przywrócono nominalny atak")
 
 func activate_crossbowman_ability(card, hand):
-	var target = find_lowest_health_card($"../AI_Player/AI_PlayerShopDeck".AI_player_hand)
+	var target = find_lowest_health_card(hand)
 	if target != null:
 		$"../BattleManager".attack_card(card,target)
 		print("Crossbowman atakuje cel z najniższym HP")
